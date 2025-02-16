@@ -1,38 +1,30 @@
 #include "push_swap.h"
-#include <stdio.h> // For debugging (remove later)
 
 typedef struct vars
 {
-    int mid;
     int size;
-    int offset;
-    int div;
-    int start;
-    int end;
-    int check;
+    int chunk_size;
+    int num_chunks;
 } vars;
 
 static void init(vars *u, stack_t *a)
 {
     u->size = stack_size(a);
-    u->div = 2;
-    u->mid = u->size / 2;
-    u->offset = u->size / u->div;
-    u->end = u->mid + u->offset;
-    u->start = (u->mid - u->offset < 0) ? 0 : u->mid - u->offset;
-    if (u->end >= u->size)
-        u->end = u->size - 1;
-    printf("Stack Size: %d, Div: %d, Start: %d, End: %d\n", u->size, u->div, u->start, u->end);
-}
-
-int is_in_range(int i, int *arr, int size, int start)
-{
-    for (int j = start; j < size; j++)
+    if (u->size <= 100)
     {
-        if (i == arr[j])
-            return 1;
+        u->chunk_size = 20;
+        u->num_chunks = u->size / u->chunk_size;
     }
-    return 0;
+    else if (u->size <= 500)
+    {
+        u->chunk_size = 50;
+        u->num_chunks = u->size / u->chunk_size;
+    }
+    else
+    {
+        u->chunk_size = 100;
+        u->num_chunks = u->size / u->chunk_size;
+    }
 }
 
 int find_index(stack_t *a, int target)
@@ -64,40 +56,20 @@ void smart_rotation(stack_t *a, int target)
     }
 }
 
-void push_to_b(stack_t *a, stack_t *b, int *arr, vars *utils)
+void push_to_b_in_chunks(stack_t *a, stack_t *b, int *arr, vars *utils)
 {
-    while (utils->start <= utils->end)
+    for (int i = 0; i < utils->num_chunks; i++)
     {
-        int target = arr[utils->start];
-        int index = find_index(a, target);
+        int chunk_start = i * utils->chunk_size;
+        int chunk_end = chunk_start + utils->chunk_size;
 
-        if (index == -1)
+        for (int j = chunk_start; j < chunk_end; j++)
         {
-            utils->start++;
-            continue;
-        }
-        while (a->head->i != target)
+            int target = arr[j];
             smart_rotation(a, target);
-        pb(a, b);
-        if (b->head && b->head->i > arr[utils->mid])
-            rb(b);
-
-        utils->start++;
+            pb(a, b);
+        }
     }
-}
-
-void update_range(vars *outils)
-{
-    if (outils->start >= outils->size)
-        return;
-
-    outils->start = (outils->start - outils->offset < 0) ? 0 : outils->start - outils->offset;
-    outils->end = (outils->end + outils->offset >= outils->size) ? outils->size - 1 : outils->end + outils->offset;
-    if (outils->start < 0)
-        outils->start = 0;
-    if (outils->end >= outils->size)
-        outils->end = outils->size - 1;
-    printf("Updated Range: Start: %d, End: %d\n", outils->start, outils->end);
 }
 
 void push_back_to_a(stack_t *a, stack_t *b)
@@ -119,6 +91,7 @@ void push_back_to_a(stack_t *a, stack_t *b)
             sa(a);
     }
 }
+
 void big_sort(stack_t *a, stack_t *b, int *array)
 {
     vars *outils = malloc(sizeof(vars));
@@ -126,15 +99,9 @@ void big_sort(stack_t *a, stack_t *b, int *array)
         return;
 
     init(outils, a);
-    outils->check = 0;
 
-    while (outils->check < outils->div)
-    {
-        push_to_b(a, b, array, outils);
-        update_range(outils);
-        outils->check++;
-    }
-
+    push_to_b_in_chunks(a, b, array, outils);
     push_back_to_a(a, b);
+
     free(outils);
 }
