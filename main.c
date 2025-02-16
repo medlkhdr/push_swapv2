@@ -42,7 +42,6 @@ int main(int ac, char **av)
         sort_5(stacka, stackb);
     else
         big_sort(stacka, stackb, sorted_ar);
-    afficher_stack(stacka);
     is_sorted_stack(stacka);
     free_stack(stacka);
     free_stack(stackb);
