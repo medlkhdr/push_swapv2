@@ -11,11 +11,11 @@ void init(vars *u, stack_t *a)
 {
     u->size = stack_size(a);
     if (u->size <= 100)
-        u->chunk_size = 15; // Smaller chunk size for small stacks
+        u->chunk_size = 15;
     else if (u->size <= 500)
-        u->chunk_size = 30; // Medium chunk size for medium stacks
+        u->chunk_size = 30;
     else
-        u->chunk_size = 50; // Larger chunk size for large stacks
+        u->chunk_size = 50;
     u->num_chunks = (u->size + u->chunk_size - 1) / u->chunk_size;
 }
 
