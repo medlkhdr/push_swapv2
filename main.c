@@ -1,5 +1,18 @@
 #include "push_swap.h"
-
+void is_sorted_stack(stack_t *a)
+{
+    node_t *tmp = a->head;
+    while(tmp->next)
+    {
+        if(tmp->i > tmp->next->i)
+        {
+            printf("not sorted");
+            return ;
+        }
+        tmp = tmp->next;
+    }
+    printf("sorted"); 
+}
 int main(int ac, char **av)
 {
     int k;
@@ -28,8 +41,9 @@ int main(int ac, char **av)
     else if (size <= 5) 
         sort_5(stacka, stackb);
     else
-        big_sort(stacka, stackb, sorted_ar , k);
-
+        big_sort(stacka, stackb, sorted_ar);
+    afficher_stack(stacka);
+    is_sorted_stack(stacka);
     free_stack(stacka);
     free_stack(stackb);
     free(ar);

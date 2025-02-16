@@ -45,7 +45,7 @@ void is_here_dup(int *a, int k);
 void sort_2(stack_t *a);
 void sort_3(stack_t *a);
 void sort_5(stack_t *a, stack_t *b);
-void big_sort(stack_t *a   , stack_t *b , int *array , int size_ar);
+void big_sort(stack_t *a, stack_t *b, int *array);
 // Stack operations
 void rotate(stack_t *stack);
 void ra(stack_t *a);
